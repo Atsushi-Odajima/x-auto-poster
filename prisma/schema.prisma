@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  password  String
+  name      String?
+  createdAt DateTime   @default(now())
+  xAccounts XAccount[]
+  themes    Theme[]
+}
+
+model XAccount {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  xUserId         String   @unique
+  xUsername       String
+  displayName     String?
+  accessToken     String
+  accessSecret    String
+  profileImageUrl String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  posts           Post[]
+}
+
+model Theme {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  tone        String   @default("engaging")
+  language    String   @default("ja")
+  createdAt   DateTime @default(now())
+  posts       Post[]
+}
+
+model Post {
+  id          String     @id @default(cuid())
+  themeId     String
+  theme       Theme      @relation(fields: [themeId], references: [id], onDelete: Cascade)
+  xAccountId  String
+  xAccount    XAccount   @relation(fields: [xAccountId], references: [id], onDelete: Cascade)
+  content     String
+  mediaUrl    String?
+  status      String     @default("PENDING")
+  scheduledAt DateTime?
+  postedAt    DateTime?
+  xPostId     String?
+  impressions Int        @default(0)
+  likes       Int        @default(0)
+  retweets    Int        @default(0)
+  createdAt   DateTime   @default(now())
+}

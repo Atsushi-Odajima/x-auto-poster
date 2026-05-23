@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+:root {
+  --x-blue: #1d9bf0;
+}
+
+@theme inline {
+  --font-sans: var(--font-geist);
+}
