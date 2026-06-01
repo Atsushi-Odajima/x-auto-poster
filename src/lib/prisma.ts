@@ -4,8 +4,9 @@ import { PrismaClient } from '@/generated/prisma/client'
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 
 function createPrismaClient() {
-  const url = `file:${process.cwd()}/prisma/dev.db`.replace(/\\/g, '/')
-  const adapter = new PrismaLibSql({ url })
+  const url = process.env.DATABASE_URL ?? `file:${process.cwd()}/prisma/dev.db`.replace(/\\/g, '/')
+  const authToken = process.env.DATABASE_AUTH_TOKEN
+  const adapter = new PrismaLibSql({ url, authToken })
   return new PrismaClient({ adapter })
 }
 
